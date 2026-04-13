@@ -118,7 +118,7 @@
         </div>
 
     </div>
-<!-- STUDENT FILE CHECK ADDON -->
+<!-- STUDENT FILE CHECK & DELETE ADDON -->
 <div style="margin-top:20px; border-top:2px dashed #ff914d; padding-top:15px;">
     <p style="color:#6b5b95; font-weight:bold;">📂 Already Submitted? Check Your File</p>
     <div class="form-group">
@@ -131,6 +131,16 @@
         🔍 View My Submission
     </button>
     <p id="checkError" style="color:red; font-size:13px;"></p>
+
+    <!-- Delete section (shown after verification) -->
+    <div id="deleteSection" style="display:none; margin-top:15px; border-top:1px dashed #ff914d; padding-top:10px;">
+        <p style="color:#ff3b2f; font-weight:bold;">⚠️ Delete My Submission</p>
+        <p style="color:#6b5b95; font-size:13px;">This will permanently delete your submitted project!</p>
+        <button onclick="deleteMySubmission()" style="background:#ff3b2f; max-width:220px;">
+            🗑️ Delete My Submission
+        </button>
+        <p id="deleteMsg" style="color:green; font-size:13px;"></p>
+    </div>
 </div>
    
     <br>
@@ -454,6 +464,58 @@ downloadLink.style.display = "inline-block";
         sessionStorage.setItem("currentStudentRegno", regno);
         window.location.href = "result.html";
     }
+    // ===================== CHECK & DELETE ADDON =====================
+function checkMySubmission() {
+    var regno = document.getElementById("checkRegno").value.trim();
+    var name = document.getElementById("checkName").value.trim().toLowerCase();
+
+    if (regno === "" || name === "") {
+        document.getElementById("checkError").innerText = "❌ Please enter both register number and name!";
+        return;
+    }
+
+    var submissions = JSON.parse(localStorage.getItem("submissions")) || [];
+    var found = null;
+    for (var i = submissions.length - 1; i >= 0; i--) {
+        if (submissions[i].regno === regno &&
+            submissions[i].name.toLowerCase() === name) {
+            found = submissions[i];
+            break;
+        }
+    }
+
+    if (!found) {
+        document.getElementById("checkError").innerText = "❌ Register number and name do not match!";
+        document.getElementById("deleteSection").style.display = "none";
+        return;
+    }
+
+    document.getElementById("checkError").innerText = "";
+    document.getElementById("deleteSection").style.display = "block";
+    sessionStorage.setItem("currentStudentRegno", regno);
+    sessionStorage.setItem("currentStudentName", name);
+    window.location.href = "result.html";
+}
+
+function deleteMySubmission() {
+    var regno = sessionStorage.getItem("currentStudentRegno");
+    var name = sessionStorage.getItem("currentStudentName");
+
+    if (!confirm("Are you sure you want to delete your submission? This cannot be undone!")) return;
+
+    var submissions = JSON.parse(localStorage.getItem("submissions")) || [];
+    var newSubmissions = submissions.filter(function(s) {
+        return !(s.regno === regno && s.name.toLowerCase() === name);
+    });
+
+    localStorage.setItem("submissions", JSON.stringify(newSubmissions));
+    sessionStorage.removeItem("currentStudentRegno");
+    sessionStorage.removeItem("currentStudentName");
+
+    document.getElementById("deleteMsg").innerText = "✅ Submission deleted successfully!";
+    document.getElementById("deleteSection").style.display = "none";
+    setTimeout(function() { window.location.href = "index.html"; }, 2000);
+}
 </script>
 
 </body>
