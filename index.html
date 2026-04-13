@@ -55,8 +55,25 @@
     <p id="originalSize" style="color:#6b5b95; font-size:12px; margin-top:5px;"></p>
     <p id="compressStatus" style="color:#ff6f61; font-size:12px;"></p>
     <div id="compressPreviewBox" style="display:none; margin-top:8px;">
-        <p id="compressedSize" style="color:green; font-size:12px; font-weight:bold;"></p>
+    <p id="compressedSize" style="color:green; font-size:12px; font-weight:bold;"></p>
+
+    <!-- PREVIEW ADDON -->
+    <div id="previewSection" style="margin-top:10px;">
+        <!-- Image preview -->
+        <img id="previewImg" style="display:none; max-width:100%; border-radius:10px; border:2px solid #ff914d; margin-top:5px;">
+
+        <!-- PDF preview -->
+        <iframe id="previewPdf"
+            style="display:none; width:100%; height:300px; border-radius:10px; border:2px solid #ff914d; margin-top:5px;"
+            frameborder="0">
+        </iframe>
+
+        <br>
+        <a id="previewDownload" href="#" download style="display:none; color:#6b5b95; font-weight:bold; font-size:13px;">
+            ⬇️ Download Compressed File
+        </a>
     </div>
+</div>
 </div>
             </div>
         </div>
@@ -352,6 +369,26 @@ async function applyCompress() {
 
         window.compressedFileData = dataUrl;
         window.compressedFileName = newFileName;
+        // PREVIEW ADDON
+document.getElementById("previewImg").style.display = "none";
+document.getElementById("previewPdf").style.display = "none";
+document.getElementById("previewDownload").style.display = "none";
+
+if (file.type.startsWith("image/")) {
+    // Show image preview
+    document.getElementById("previewImg").src = dataUrl;
+    document.getElementById("previewImg").style.display = "block";
+} else {
+    // Show PDF preview in iframe
+    document.getElementById("previewPdf").src = dataUrl;
+    document.getElementById("previewPdf").style.display = "block";
+}
+
+// Show download link
+var downloadLink = document.getElementById("previewDownload");
+downloadLink.href = dataUrl;
+downloadLink.download = newFileName;
+downloadLink.style.display = "inline-block";
 
         document.getElementById("compressStatus").innerText = "";
         document.getElementById("compressPreviewBox").style.display = "block";
