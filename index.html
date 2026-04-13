@@ -164,6 +164,7 @@ function showMessage() {
         submissions.push(submission);
         localStorage.setItem("submissions", JSON.stringify(submissions));
         alert("Project Submitted Successfully!");
+        sessionStorage.setItem("currentStudentRegno", regno);
         window.location.href = "result.html";
     } else {
         var reader = new FileReader();
@@ -176,6 +177,7 @@ function showMessage() {
             submissions.push(submission);
             localStorage.setItem("submissions", JSON.stringify(submissions));
             alert("Project Submitted Successfully!");
+            sessionStorage.setItem("currentStudentRegno", regno);
             window.location.href = "result.html";
         };
         reader.readAsDataURL(file);
