@@ -365,12 +365,27 @@ function clearNotifications(event) {
     document.getElementById("notifDropdown").style.display = "none";
     showAdminPanel();
 }
-
-function scrollToCard(id) {
+    function scrollToCard(id) {
     var card = document.getElementById("card_" + id);
     if (card) {
         card.scrollIntoView({ behavior: "smooth" });
         card.style.border = "3px solid #ff3b2f";
         setTimeout(function() { card.style.border = "2px solid #ff914d"; }, 2000);
     }
-    document.getElementById("notif
+    document.getElementById("notifDropdown").style.display = "none";
+}
+
+document.addEventListener("click", function(e) {
+    var d = document.getElementById("notifDropdown");
+    if (d && !d.contains(e.target)) d.style.display = "none";
+});
+
+if (sessionStorage.getItem("isAdmin") === "true") showAdminPanel();
+setInterval(function() {
+    if (sessionStorage.getItem("isAdmin") === "true") showAdminPanel();
+}, 30000);
+</script>
+</body>
+</html>
+
+
